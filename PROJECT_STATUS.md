@@ -35,15 +35,15 @@ Build the first deterministic simulation milestone:
 
 ## In progress
 
-- Deterministic physiological progression.
 - Scenario action definitions.
+- Intervention effects.
 - Event timeline design.
 
 ## Not started
 
 - Frontend application.
-- Physiological progression engine.
-- Scenario state transitions.
+- Scenario action system.
+- Intervention engine.
 - Action system.
 - Event timeline.
 - Deterministic scoring.
@@ -60,7 +60,7 @@ None.
 
 ## Next exact action
 
-Implement deterministic time progression for the patient state.
+Implement the first learner actions and deterministic intervention effects.
 
 ## Current repository path
 
@@ -76,4 +76,4 @@ Implement deterministic time progression for the patient state.
 
 ## Pending commit
 
-`feat: add initial deterministic patient state`
+`feat: add deterministic physiological progression`

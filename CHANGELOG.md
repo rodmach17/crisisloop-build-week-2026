@@ -59,3 +59,11 @@ The format follows a simplified chronological log for OpenAI Build Week 2026.
 - Added the deterministic initial state for the postoperative hemorrhagic shock scenario.
 - Added the `/scenario/initial` endpoint.
 - Verified the structured scenario response locally.
+
+### Added
+
+- Added deterministic physiological progression over time.
+- Added the `/scenario/advance` endpoint.
+- Added transition from compensated shock to decompensated shock without intervention.
+- Added automated tests for deterioration and zero-second state copying.
+- Verified deterministic progression with passing pytest tests.
