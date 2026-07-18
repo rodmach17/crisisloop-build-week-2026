@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 
+from backend.app.engine.interventions import apply_clinical_action
 from backend.app.engine.progression import advance_patient_state
 from backend.app.engine.scenario import create_initial_patient_state
+from backend.app.schemas.actions import ApplyActionRequest, ActionResult
 from backend.app.schemas.patient import PatientState
 from backend.app.schemas.simulation import (
     AdvanceScenarioRequest,
@@ -48,4 +50,21 @@ def advance_scenario(
     return AdvanceScenarioResponse(
         previous_state=request.state,
         current_state=current_state,
+    )
+
+
+@app.post("/scenario/action", response_model=ActionResult)
+def apply_action(
+    request: ApplyActionRequest,
+) -> ActionResult:
+    updated_state, description = apply_clinical_action(
+        state=request.state,
+        action=request.action,
+    )
+
+    return ActionResult(
+        action=request.action,
+        description=description,
+        state_before=request.state,
+        state_after=updated_state,
     )

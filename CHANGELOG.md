@@ -67,3 +67,12 @@ The format follows a simplified chronological log for OpenAI Build Week 2026.
 - Added transition from compensated shock to decompensated shock without intervention.
 - Added automated tests for deterioration and zero-second state copying.
 - Verified deterministic progression with passing pytest tests.
+
+### Added
+
+- Added deterministic clinical action schemas.
+- Added actions to call for help, start intravenous fluids, and activate transfusion.
+- Added reproducible intervention effects on vital signs, blood loss, and cumulative harm.
+- Added the `/scenario/action` endpoint.
+- Added automated intervention tests.
+- Verified all intervention tests with pytest.

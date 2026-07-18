@@ -35,15 +35,15 @@ Build the first deterministic simulation milestone:
 
 ## In progress
 
-- Scenario action definitions.
-- Intervention effects.
 - Event timeline design.
+- Action logging.
+- Deterministic scoring design.
 
 ## Not started
 
 - Frontend application.
-- Scenario action system.
-- Intervention engine.
+- Event timeline.
+- Deterministic scoring.
 - Action system.
 - Event timeline.
 - Deterministic scoring.
@@ -60,7 +60,7 @@ None.
 
 ## Next exact action
 
-Implement the first learner actions and deterministic intervention effects.
+Implement the event timeline and record each learner action with its timestamp.
 
 ## Current repository path
 
@@ -76,4 +76,4 @@ Implement the first learner actions and deterministic intervention effects.
 
 ## Pending commit
 
-`feat: add deterministic physiological progression`
+`feat: add deterministic clinical interventions`
