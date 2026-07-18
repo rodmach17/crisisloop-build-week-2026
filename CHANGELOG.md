@@ -51,3 +51,11 @@ The format follows a simplified chronological log for OpenAI Build Week 2026.
 - Added root and health-check endpoints.
 - Verified local API responses at `/` and `/health`.
 - Added pinned backend dependencies.
+
+### Added
+
+- Added validated patient-state schemas with Pydantic.
+- Added clinical phases and structured vital signs.
+- Added the deterministic initial state for the postoperative hemorrhagic shock scenario.
+- Added the `/scenario/initial` endpoint.
+- Verified the structured scenario response locally.

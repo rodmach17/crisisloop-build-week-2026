@@ -35,15 +35,15 @@ Build the first deterministic simulation milestone:
 
 ## In progress
 
-- Scenario design.
-- Deterministic physiological engine design.
-- Backend schema definition.
+- Deterministic physiological progression.
+- Scenario action definitions.
+- Event timeline design.
 
 ## Not started
 
 - Frontend application.
-- Physiological engine.
-- Scenario state machine.
+- Physiological progression engine.
+- Scenario state transitions.
 - Action system.
 - Event timeline.
 - Deterministic scoring.
@@ -60,7 +60,7 @@ None.
 
 ## Next exact action
 
-Define the first deterministic patient-state schema and scenario endpoint.
+Implement deterministic time progression for the patient state.
 
 ## Current repository path
 
@@ -76,4 +76,4 @@ Define the first deterministic patient-state schema and scenario endpoint.
 
 ## Pending commit
 
-`feat: add initial FastAPI backend`
+`feat: add initial deterministic patient state`

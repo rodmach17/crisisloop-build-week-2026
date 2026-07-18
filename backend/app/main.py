@@ -1,5 +1,8 @@
 from fastapi import FastAPI
 
+from backend.app.engine.scenario import create_initial_patient_state
+from backend.app.schemas.patient import PatientState
+
 app = FastAPI(
     title="CrisisLoop API",
     version="0.1.0",
@@ -21,3 +24,8 @@ def health() -> dict[str, str]:
     return {
         "status": "healthy",
     }
+
+
+@app.get("/scenario/initial", response_model=PatientState)
+def get_initial_scenario() -> PatientState:
+    return create_initial_patient_state()
