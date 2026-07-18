@@ -8,7 +8,7 @@ The product scope has been defined and frozen around a single educational clinic
 
 **Occult postoperative hemorrhagic shock**
 
-No application code has been implemented yet.
+The initial FastAPI backend has been implemented and verified locally.
 
 ## Current objective
 
@@ -35,15 +35,13 @@ Build the first deterministic simulation milestone:
 
 ## In progress
 
-- Initial project documentation.
-- Technical architecture definition.
 - Scenario design.
-- Development environment setup.
+- Deterministic physiological engine design.
+- Backend schema definition.
 
 ## Not started
 
 - Frontend application.
-- Backend API.
 - Physiological engine.
 - Scenario state machine.
 - Action system.
@@ -62,7 +60,7 @@ None.
 
 ## Next exact action
 
-Document the initial architecture and technical decisions in `DECISIONS.md`.
+Define the first deterministic patient-state schema and scenario endpoint.
 
 ## Current repository path
 
@@ -74,8 +72,8 @@ Document the initial architecture and technical decisions in `DECISIONS.md`.
 
 ## Last relevant commit
 
-No commits yet.
+`9a7b084 chore: initialize CrisisLoop Build Week project`
 
 ## Pending commit
 
-`chore: initialize CrisisLoop Build Week project`
+`feat: add initial FastAPI backend`

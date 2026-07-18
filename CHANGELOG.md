@@ -44,3 +44,10 @@ The format follows a simplified chronological log for OpenAI Build Week 2026.
 - Created base frontend, backend, scenario, documentation, test, and script directories.
 - Defined the initial scenario as occult postoperative hemorrhagic shock.
 - Frozen the MVP around a single polished clinical crisis simulation.
+
+### Added
+
+- Created the initial FastAPI backend.
+- Added root and health-check endpoints.
+- Verified local API responses at `/` and `/health`.
+- Added pinned backend dependencies.
