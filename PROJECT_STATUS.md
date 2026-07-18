@@ -35,18 +35,18 @@ Build the first deterministic simulation milestone:
 
 ## In progress
 
-- Session API integration.
-- Score endpoint.
-- Critical-decision reporting.
+- Frontend application setup.
+- Clinical monitor interface.
+- Browser-based session flow.
 
 ## Not started
 
 - Frontend application.
-- Session API integration.
-- Score endpoint.
+- Frontend application.
+- Browser session experience.
 - Action system.
-- Session API integration.
-- Score endpoint.
+- Frontend application.
+- Browser session experience.
 - GPT-5.6 coaching.
 - Adaptive replay.
 - Pre/post comparison.
@@ -60,7 +60,7 @@ None.
 
 ## Next exact action
 
-Expose simulation sessions and deterministic scoring through the API.
+Create the React frontend and connect it to the session API.
 
 ## Current repository path
 
@@ -76,4 +76,4 @@ Expose simulation sessions and deterministic scoring through the API.
 
 ## Pending commit
 
-`feat: add deterministic session scoring`
+`feat: expose complete simulation session API`

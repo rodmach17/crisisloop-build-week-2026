@@ -94,3 +94,11 @@ The format follows a simplified chronological log for OpenAI Build Week 2026.
 - Added critical decision-point identification.
 - Added automated tests comparing delayed and early management.
 - Verified all scoring tests with pytest.
+
+### Added
+
+- Added complete simulation-session API endpoints.
+- Added session creation, timed progression, action application, and scoring endpoints.
+- Added API schemas for session operations.
+- Added end-to-end API tests for the full learner flow.
+- Verified the complete session API with passing tests.

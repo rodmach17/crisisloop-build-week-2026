@@ -3,12 +3,24 @@ from fastapi import FastAPI
 from backend.app.engine.interventions import apply_clinical_action
 from backend.app.engine.progression import advance_patient_state
 from backend.app.engine.scenario import create_initial_patient_state
+from backend.app.engine.session import (
+    advance_session,
+    apply_action_to_session,
+    create_simulation_session,
+)
 from backend.app.schemas.actions import ApplyActionRequest, ActionResult
 from backend.app.schemas.patient import PatientState
+from backend.app.schemas.session_api import (
+    AdvanceSessionRequest,
+    ApplySessionActionRequest,
+    SessionScoreResponse,
+)
 from backend.app.schemas.simulation import (
     AdvanceScenarioRequest,
     AdvanceScenarioResponse,
 )
+from backend.app.schemas.timeline import SimulationSession
+from backend.app.scoring.evaluator import evaluate_session
 
 app = FastAPI(
     title="CrisisLoop API",
@@ -67,4 +79,39 @@ def apply_action(
         description=description,
         state_before=request.state,
         state_after=updated_state,
+    )
+
+
+@app.post("/session", response_model=SimulationSession)
+def create_session() -> SimulationSession:
+    return create_simulation_session()
+
+
+@app.post("/session/advance", response_model=SimulationSession)
+def advance_existing_session(
+    request: AdvanceSessionRequest,
+) -> SimulationSession:
+    return advance_session(
+        session=request.session,
+        seconds=request.seconds,
+    )
+
+
+@app.post("/session/action", response_model=SimulationSession)
+def apply_session_action(
+    request: ApplySessionActionRequest,
+) -> SimulationSession:
+    return apply_action_to_session(
+        session=request.session,
+        action=request.action,
+    )
+
+
+@app.post("/session/score", response_model=SessionScoreResponse)
+def score_session(
+    session: SimulationSession,
+) -> SessionScoreResponse:
+    return SessionScoreResponse(
+        session=session,
+        score=evaluate_session(session),
     )
