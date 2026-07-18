@@ -76,3 +76,12 @@ The format follows a simplified chronological log for OpenAI Build Week 2026.
 - Added the `/scenario/action` endpoint.
 - Added automated intervention tests.
 - Verified all intervention tests with pytest.
+
+### Added
+
+- Added simulation session schemas.
+- Added timeline events for time advancement and clinical actions.
+- Added deterministic session creation.
+- Added event recording with state before and after each change.
+- Added automated tests for session and timeline behavior.
+- Verified all session tests with pytest.

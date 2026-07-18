@@ -35,18 +35,18 @@ Build the first deterministic simulation milestone:
 
 ## In progress
 
-- Event timeline design.
-- Action logging.
 - Deterministic scoring design.
+- Critical decision detection.
+- Session API integration.
 
 ## Not started
 
 - Frontend application.
-- Event timeline.
 - Deterministic scoring.
+- Critical decision detector.
 - Action system.
-- Event timeline.
 - Deterministic scoring.
+- Critical decision detector.
 - GPT-5.6 coaching.
 - Adaptive replay.
 - Pre/post comparison.
@@ -60,7 +60,7 @@ None.
 
 ## Next exact action
 
-Implement the event timeline and record each learner action with its timestamp.
+Implement deterministic scoring and identify the learner's critical decision point.
 
 ## Current repository path
 
@@ -76,4 +76,4 @@ Implement the event timeline and record each learner action with its timestamp.
 
 ## Pending commit
 
-`feat: add deterministic clinical interventions`
+`feat: add simulation session timeline`
