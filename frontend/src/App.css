@@ -1,0 +1,301 @@
+:root {
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  color: #e8eef7;
+  background: #070b12;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(32, 91, 140, 0.22), transparent 34%),
+    linear-gradient(180deg, #080d16 0%, #05080d 100%);
+}
+
+button {
+  font: inherit;
+}
+
+.app-shell {
+  width: min(1440px, 100%);
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.topbar,
+.scenario-header,
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.topbar {
+  margin-bottom: 28px;
+}
+
+.eyebrow,
+.section-label {
+  margin: 0 0 8px;
+  color: #6f9fc7;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 4px;
+  font-size: clamp(2.2rem, 5vw, 4.3rem);
+  letter-spacing: -0.05em;
+}
+
+h2 {
+  margin-bottom: 8px;
+  font-size: clamp(1.35rem, 3vw, 2.2rem);
+}
+
+h3 {
+  margin-bottom: 0;
+  font-size: 1.15rem;
+}
+
+.subtitle,
+.scenario-header p,
+.empty-state,
+footer {
+  color: #95a3b6;
+}
+
+.prototype-badge,
+.status-pill {
+  border: 1px solid rgba(95, 190, 143, 0.35);
+  border-radius: 999px;
+  background: rgba(28, 111, 72, 0.18);
+  color: #82d6a8;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.prototype-badge {
+  padding: 10px 14px;
+}
+
+.status-pill {
+  padding: 7px 11px;
+}
+
+.scenario-header {
+  margin-bottom: 22px;
+  padding: 22px 24px;
+  border: 1px solid #1b2635;
+  border-radius: 18px;
+  background: rgba(12, 19, 29, 0.88);
+}
+
+.timer-card {
+  min-width: 150px;
+  padding: 16px 20px;
+  border: 1px solid #24364a;
+  border-radius: 14px;
+  background: #0b121d;
+  text-align: right;
+}
+
+.timer-card span {
+  display: block;
+  margin-bottom: 6px;
+  color: #7f8da1;
+  font-size: 0.8rem;
+}
+
+.timer-card strong {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 1.65rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(300px, 0.8fr);
+  gap: 22px;
+  margin-bottom: 22px;
+}
+
+.panel {
+  border: 1px solid #1b2635;
+  border-radius: 18px;
+  background: rgba(10, 16, 25, 0.93);
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.28);
+}
+
+.monitor-panel,
+.actions-panel,
+.timeline-panel {
+  padding: 24px;
+}
+
+.vitals-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.vital-card {
+  min-height: 132px;
+  padding: 18px;
+  border: 1px solid #213044;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #0d1622, #0a111a);
+}
+
+.vital-card span,
+.clinical-summary span {
+  display: block;
+  color: #7f8da1;
+  font-size: 0.8rem;
+}
+
+.vital-card strong {
+  display: block;
+  margin: 15px 0 2px;
+  color: #dbe9f7;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: clamp(1.6rem, 3vw, 2.5rem);
+}
+
+.vital-card small {
+  color: #6f9fc7;
+}
+
+.clinical-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.clinical-summary div {
+  padding: 14px;
+  border: 1px solid #1c2837;
+  border-radius: 12px;
+  background: #091019;
+}
+
+.clinical-summary strong {
+  display: block;
+  margin-top: 7px;
+  color: #dbe2ec;
+  font-size: 0.94rem;
+}
+
+.action-stack {
+  display: grid;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.action-stack button,
+.advance-button {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition:
+    transform 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease;
+}
+
+.action-stack button {
+  border: 1px solid #2a3b50;
+  background: #101b29;
+  color: #d8e4f0;
+  text-align: left;
+}
+
+.action-stack button:hover {
+  transform: translateY(-1px);
+  border-color: #4c7ba4;
+  background: #142235;
+}
+
+.advance-button {
+  margin-top: 18px;
+  border: 1px solid #3e7fb4;
+  background: linear-gradient(135deg, #1b5f91, #2377aa);
+  color: white;
+  font-weight: 700;
+}
+
+.advance-button:hover {
+  transform: translateY(-1px);
+}
+
+.timeline-panel {
+  margin-bottom: 20px;
+}
+
+.empty-state {
+  margin-top: 20px;
+  padding: 28px;
+  border: 1px dashed #2b394b;
+  border-radius: 14px;
+  text-align: center;
+}
+
+footer {
+  padding: 8px 4px 24px;
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+@media (max-width: 980px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vitals-grid,
+  .clinical-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    padding: 18px;
+  }
+
+  .topbar,
+  .scenario-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .timer-card {
+    width: 100%;
+    text-align: left;
+  }
+
+  .vitals-grid,
+  .clinical-summary {
+    grid-template-columns: 1fr;
+  }
+}

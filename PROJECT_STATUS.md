@@ -35,18 +35,18 @@ Build the first deterministic simulation milestone:
 
 ## In progress
 
-- Frontend application setup.
-- Clinical monitor interface.
-- Browser-based session flow.
+- Backend-to-frontend API integration.
+- Dynamic patient state rendering.
+- Interactive learner actions.
 
 ## Not started
 
 - Frontend application.
-- Frontend application.
-- Browser session experience.
+- Backend-to-frontend integration.
+- Interactive browser session.
 - Action system.
-- Frontend application.
-- Browser session experience.
+- Backend-to-frontend integration.
+- Interactive browser session.
 - GPT-5.6 coaching.
 - Adaptive replay.
 - Pre/post comparison.
@@ -60,7 +60,7 @@ None.
 
 ## Next exact action
 
-Create the React frontend and connect it to the session API.
+Connect the React frontend to the FastAPI session endpoints.
 
 ## Current repository path
 
@@ -76,4 +76,4 @@ Create the React frontend and connect it to the session API.
 
 ## Pending commit
 
-`feat: expose complete simulation session API`
+`feat: add initial CrisisLoop frontend`
