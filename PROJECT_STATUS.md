@@ -35,18 +35,18 @@ Build the first deterministic simulation milestone:
 
 ## In progress
 
-- Deterministic scoring design.
-- Critical decision detection.
 - Session API integration.
+- Score endpoint.
+- Critical-decision reporting.
 
 ## Not started
 
 - Frontend application.
-- Deterministic scoring.
-- Critical decision detector.
+- Session API integration.
+- Score endpoint.
 - Action system.
-- Deterministic scoring.
-- Critical decision detector.
+- Session API integration.
+- Score endpoint.
 - GPT-5.6 coaching.
 - Adaptive replay.
 - Pre/post comparison.
@@ -60,7 +60,7 @@ None.
 
 ## Next exact action
 
-Implement deterministic scoring and identify the learner's critical decision point.
+Expose simulation sessions and deterministic scoring through the API.
 
 ## Current repository path
 
@@ -76,4 +76,4 @@ Implement deterministic scoring and identify the learner's critical decision poi
 
 ## Pending commit
 
-`feat: add simulation session timeline`
+`feat: add deterministic session scoring`

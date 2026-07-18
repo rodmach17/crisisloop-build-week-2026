@@ -85,3 +85,12 @@ The format follows a simplified chronological log for OpenAI Build Week 2026.
 - Added event recording with state before and after each change.
 - Added automated tests for session and timeline behavior.
 - Verified all session tests with pytest.
+
+### Added
+
+- Added deterministic session scoring.
+- Added recognition, intervention, and safety subscores.
+- Added critical omission detection.
+- Added critical decision-point identification.
+- Added automated tests comparing delayed and early management.
+- Verified all scoring tests with pytest.
