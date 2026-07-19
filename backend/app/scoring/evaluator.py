@@ -73,21 +73,27 @@ def evaluate_session(session: SimulationSession) -> SessionScore:
 
     critical_decision: CriticalDecision | None = None
 
-    if help_time is None or help_time > 120:
+    elapsed = session.current_state.elapsed_seconds
+
+    if elapsed >= 120 and (help_time is None or help_time > 120):
         critical_decision = CriticalDecision(
             elapsed_seconds=120,
             reason="Delayed recognition and escalation of hemorrhagic shock.",
             missed_action=ClinicalActionType.CALL_FOR_HELP,
         )
-    elif transfusion_time is None or transfusion_time > 210:
+    elif elapsed >= 210 and (
+        transfusion_time is None or transfusion_time > 210
+    ):
         critical_decision = CriticalDecision(
-            elapsed_seconds=150,
+            elapsed_seconds=210,
             reason="Definitive hemorrhage control and transfusion were delayed.",
             missed_action=ClinicalActionType.ACTIVATE_TRANSFUSION,
         )
-    elif fluids_time is None or fluids_time > 180:
+    elif elapsed >= 180 and (
+        fluids_time is None or fluids_time > 180
+    ):
         critical_decision = CriticalDecision(
-            elapsed_seconds=90,
+            elapsed_seconds=180,
             reason="Initial resuscitation was delayed.",
             missed_action=ClinicalActionType.START_IV_FLUIDS,
         )

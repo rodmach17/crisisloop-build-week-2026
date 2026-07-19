@@ -35,18 +35,18 @@ Build the first deterministic simulation milestone:
 
 ## In progress
 
-- Backend-to-frontend API integration.
-- Dynamic patient state rendering.
-- Interactive learner actions.
+- Adaptive coaching integration.
+- Replay workflow.
+- Pre/post comparison.
 
 ## Not started
 
 - Frontend application.
-- Backend-to-frontend integration.
-- Interactive browser session.
+- Adaptive coaching.
+- Replay and pre/post comparison.
 - Action system.
-- Backend-to-frontend integration.
-- Interactive browser session.
+- Adaptive coaching.
+- Replay and pre/post comparison.
 - GPT-5.6 coaching.
 - Adaptive replay.
 - Pre/post comparison.
@@ -60,7 +60,7 @@ None.
 
 ## Next exact action
 
-Connect the React frontend to the FastAPI session endpoints.
+Add structured GPT-5.6 coaching and the first replay workflow.
 
 ## Current repository path
 
@@ -76,4 +76,4 @@ Connect the React frontend to the FastAPI session endpoints.
 
 ## Pending commit
 
-`feat: add initial CrisisLoop frontend`
+`feat: connect frontend to simulation API`

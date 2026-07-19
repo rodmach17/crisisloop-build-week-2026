@@ -110,3 +110,11 @@ The format follows a simplified chronological log for OpenAI Build Week 2026.
 - Added patient vital-sign cards, scenario status, learner actions, timer, and timeline sections.
 - Added responsive styling for desktop and mobile layouts.
 - Verified the frontend with a successful production build.
+
+### Fixed
+
+- Prevented completed learner actions from being selected repeatedly in the frontend.
+- Added visual completion states for executed actions.
+- Added automatic scrolling to the score panel.
+- Prevented future critical-decision thresholds from being reported before they occur.
+- Verified the complete backend test suite with 13 passing tests.
