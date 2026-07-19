@@ -67,7 +67,7 @@ def test_coach_debrief_endpoint_returns_structured_response(
         "/coach/debrief",
         json={
             "session": advance_response.json(),
-            "language": "es",
+            "language": "Spanish",
         },
     )
 
@@ -77,6 +77,6 @@ def test_coach_debrief_endpoint_returns_structured_response(
 
     assert result["model"] == "gpt-5.6-sol"
     assert result["replay_from_seconds"] == 90
-    assert result["language"] == "es"
+    assert result["language"] == "Spanish"
     assert result["educational_use_only"] is True
     assert result["score"]["critical_decision"]["elapsed_seconds"] == 120

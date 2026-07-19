@@ -8,7 +8,6 @@ from openai import OpenAI
 from backend.app.schemas.coach import (
     AdaptiveDebriefContent,
     CoachDebriefResponse,
-    CoachLanguage,
 )
 from backend.app.schemas.scoring import SessionScore
 from backend.app.schemas.timeline import SimulationSession
@@ -33,7 +32,7 @@ def _load_environment() -> None:
 def generate_adaptive_debrief(
     session: SimulationSession,
     score: SessionScore,
-    language: CoachLanguage = "en",
+    language: str = "English",
     client: OpenAI | None = None,
 ) -> CoachDebriefResponse:
     """Generate educational feedback without changing simulation state."""
@@ -46,7 +45,7 @@ def generate_adaptive_debrief(
     openai_client = client or OpenAI()
 
     replay_from_seconds = determine_replay_from_seconds(score)
-    language_name = "Spanish" if language == "es" else "English"
+    language_name = language.strip()
 
     verified_payload = {
         "scenario": "Occult postoperative hemorrhage with hypovolemic shock",
