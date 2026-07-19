@@ -80,6 +80,45 @@ type CoachDebriefResponse = {
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000";
 
+const coachUiCopy = {
+  en: {
+    languageLabel: "Debrief language",
+    otherOption: "Other…",
+    customPlaceholder: "Example: Deutsch, 日本語, Italiano",
+    generate: "Generate adaptive debrief",
+    generating: "Generating adaptive debrief...",
+    eyebrow: "GPT-5.6 adaptive coach",
+    title: "Personalized debrief",
+    performanceSummary: "Performance summary",
+    strengths: "Strengths",
+    improvementPriorities: "Improvement priorities",
+    clinicalReasoning: "Clinical reasoning",
+    replayFrom: "Replay from",
+    replayObjective: "Replay objective",
+    successCriteria: "Success criteria",
+    disclaimer:
+      "AI-generated educational feedback based only on the verified deterministic timeline and score.",
+  },
+  es: {
+    languageLabel: "Idioma del informe",
+    otherOption: "Otro…",
+    customPlaceholder: "Ejemplo: Deutsch, 日本語, Italiano",
+    generate: "Generar informe adaptativo",
+    generating: "Generando informe adaptativo...",
+    eyebrow: "Entrenador adaptativo GPT-5.6",
+    title: "Informe personalizado",
+    performanceSummary: "Resumen de rendimiento",
+    strengths: "Fortalezas",
+    improvementPriorities: "Prioridades de mejora",
+    clinicalReasoning: "Razonamiento clínico",
+    replayFrom: "Repetición desde",
+    replayObjective: "Objetivo de repetición",
+    successCriteria: "Criterios de éxito",
+    disclaimer:
+      "Retroalimentación educativa generada por IA basada únicamente en la cronología determinista verificada y la puntuación obtenida.",
+  },
+} as const;
+
 const phaseLabels: Record<ClinicalPhase, string> = {
   compensated: "Compensated phase",
   early_shock: "Early shock",
@@ -314,6 +353,10 @@ function App() {
     }
   }
 
+  const coachUiLanguage =
+    coachLanguageOption === "Español" ? "es" : "en";
+  const coachCopy = coachUiCopy[coachUiLanguage];
+
   const patient = session?.current_state;
 
   const completedActions = useMemo(
@@ -511,7 +554,7 @@ function App() {
 
           <div className="coach-controls">
             <label htmlFor="coach-language">
-              Debrief language
+              {coachCopy.languageLabel}
             </label>
 
             <select
@@ -527,7 +570,9 @@ function App() {
               <option value="Español">Español</option>
               <option value="Português">Português</option>
               <option value="Français">Français</option>
-              <option value="Other">Other…</option>
+              <option value="Other">
+                {coachCopy.otherOption}
+              </option>
             </select>
 
             {coachLanguageOption === "Other" ? (
@@ -536,7 +581,7 @@ function App() {
                 maxLength={40}
                 value={customCoachLanguage}
                 disabled={busyAction !== null}
-                placeholder="Example: Deutsch, 日本語, Italiano"
+                placeholder={coachCopy.customPlaceholder}
                 onChange={(event) => {
                   setCustomCoachLanguage(event.target.value);
                   setCoachResult(null);
@@ -557,8 +602,8 @@ function App() {
             onClick={() => void generateAdaptiveDebrief()}
           >
             {busyAction === "coach"
-              ? "Generating adaptive debrief..."
-              : "Generate adaptive debrief"}
+              ? coachCopy.generating
+              : coachCopy.generate}
           </button>
 
           <button
@@ -667,8 +712,8 @@ function App() {
         >
           <div className="coach-heading">
             <div>
-              <p className="section-label">GPT-5.6 adaptive coach</p>
-              <h3>Personalized debrief</h3>
+              <p className="section-label">{coachCopy.eyebrow}</p>
+              <h3>{coachCopy.title}</h3>
             </div>
             <span className="coach-model">
               {coachResult.model} · {coachResult.language}
@@ -676,13 +721,13 @@ function App() {
           </div>
 
           <div className="coach-summary">
-            <span>Performance summary</span>
+            <span>{coachCopy.performanceSummary}</span>
             <p>{coachResult.debrief.performance_summary}</p>
           </div>
 
           <div className="coach-grid">
             <article>
-              <span>Strengths</span>
+              <span>{coachCopy.strengths}</span>
               <ul>
                 {coachResult.debrief.strengths.map((strength) => (
                   <li key={strength}>{strength}</li>
@@ -691,7 +736,7 @@ function App() {
             </article>
 
             <article>
-              <span>Improvement priorities</span>
+              <span>{coachCopy.improvementPriorities}</span>
               <ul>
                 {coachResult.debrief.improvement_priorities.map(
                   (priority) => (
@@ -703,7 +748,7 @@ function App() {
           </div>
 
           <div className="coach-reasoning">
-            <span>Clinical reasoning</span>
+            <span>{coachCopy.clinicalReasoning}</span>
             <p>
               {coachResult.debrief.clinical_reasoning_explanation}
             </p>
@@ -711,7 +756,7 @@ function App() {
 
           <div className="replay-card">
             <div>
-              <span>Replay from</span>
+              <span>{coachCopy.replayFrom}</span>
               <strong>
                 {formatElapsedTime(
                   coachResult.replay_from_seconds,
@@ -720,12 +765,12 @@ function App() {
             </div>
 
             <div>
-              <span>Replay objective</span>
+              <span>{coachCopy.replayObjective}</span>
               <p>{coachResult.debrief.replay_objective}</p>
             </div>
 
             <div>
-              <span>Success criteria</span>
+              <span>{coachCopy.successCriteria}</span>
               <ul>
                 {coachResult.debrief.replay_success_criteria.map(
                   (criterion) => (
@@ -737,8 +782,7 @@ function App() {
           </div>
 
           <p className="coach-disclaimer">
-            AI-generated educational feedback based only on the
-            verified deterministic timeline and score.
+            {coachCopy.disclaimer}
           </p>
         </section>
       ) : null}
