@@ -58,6 +58,24 @@ type SessionScore = {
   } | null;
 };
 
+type AdaptiveDebrief = {
+  performance_summary: string;
+  strengths: string[];
+  improvement_priorities: string[];
+  clinical_reasoning_explanation: string;
+  replay_objective: string;
+  replay_success_criteria: string[];
+};
+
+type CoachDebriefResponse = {
+  session_id: string;
+  model: string;
+  score: SessionScore;
+  replay_from_seconds: number;
+  debrief: AdaptiveDebrief;
+  educational_use_only: boolean;
+};
+
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000";
 
@@ -82,15 +100,19 @@ function formatElapsedTime(totalSeconds: number): string {
 function App() {
   const [session, setSession] = useState<SimulationSession | null>(null);
   const [score, setScore] = useState<SessionScore | null>(null);
+  const [coachResult, setCoachResult] =
+    useState<CoachDebriefResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [busyAction, setBusyAction] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const scoreSectionRef = useRef<HTMLElement | null>(null);
+  const coachSectionRef = useRef<HTMLElement | null>(null);
 
   async function createSession() {
     setLoading(true);
     setError(null);
     setScore(null);
+    setCoachResult(null);
 
     try {
       const response = await fetch(`${API_BASE_URL}/session`, {
@@ -143,6 +165,7 @@ function App() {
       const data: SimulationSession = await response.json();
       setSession(data);
       setScore(null);
+      setCoachResult(null);
     } catch (requestError) {
       setError(
         requestError instanceof Error
@@ -179,6 +202,7 @@ function App() {
       const data: SimulationSession = await response.json();
       setSession(data);
       setScore(null);
+      setCoachResult(null);
     } catch (requestError) {
       setError(
         requestError instanceof Error
@@ -224,6 +248,50 @@ function App() {
         requestError instanceof Error
           ? requestError.message
           : "Unable to calculate the score.",
+      );
+    } finally {
+      setBusyAction(null);
+    }
+  }
+
+  async function generateAdaptiveDebrief() {
+    if (!session) return;
+
+    setBusyAction("coach");
+    setError(null);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/coach/debrief`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          session,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Adaptive debrief failed: ${response.status}`,
+        );
+      }
+
+      const data: CoachDebriefResponse = await response.json();
+      setScore(data.score);
+      setCoachResult(data);
+
+      window.setTimeout(() => {
+        coachSectionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 100);
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Unable to generate the adaptive debrief.",
       );
     } finally {
       setBusyAction(null);
@@ -426,6 +494,17 @@ function App() {
           </button>
 
           <button
+            className="coach-button"
+            type="button"
+            disabled={busyAction !== null || score === null}
+            onClick={() => void generateAdaptiveDebrief()}
+          >
+            {busyAction === "coach"
+              ? "Generating adaptive debrief..."
+              : "Generate adaptive debrief"}
+          </button>
+
+          <button
             className="reset-button"
             type="button"
             disabled={busyAction !== null}
@@ -521,6 +600,89 @@ function App() {
               No critical decision failure detected.
             </div>
           )}
+        </section>
+      ) : null}
+
+      {coachResult ? (
+        <section
+          ref={coachSectionRef}
+          className="panel coach-panel"
+        >
+          <div className="coach-heading">
+            <div>
+              <p className="section-label">GPT-5.6 adaptive coach</p>
+              <h3>Personalized debrief</h3>
+            </div>
+            <span className="coach-model">
+              {coachResult.model}
+            </span>
+          </div>
+
+          <div className="coach-summary">
+            <span>Performance summary</span>
+            <p>{coachResult.debrief.performance_summary}</p>
+          </div>
+
+          <div className="coach-grid">
+            <article>
+              <span>Strengths</span>
+              <ul>
+                {coachResult.debrief.strengths.map((strength) => (
+                  <li key={strength}>{strength}</li>
+                ))}
+              </ul>
+            </article>
+
+            <article>
+              <span>Improvement priorities</span>
+              <ul>
+                {coachResult.debrief.improvement_priorities.map(
+                  (priority) => (
+                    <li key={priority}>{priority}</li>
+                  ),
+                )}
+              </ul>
+            </article>
+          </div>
+
+          <div className="coach-reasoning">
+            <span>Clinical reasoning</span>
+            <p>
+              {coachResult.debrief.clinical_reasoning_explanation}
+            </p>
+          </div>
+
+          <div className="replay-card">
+            <div>
+              <span>Replay from</span>
+              <strong>
+                {formatElapsedTime(
+                  coachResult.replay_from_seconds,
+                )}
+              </strong>
+            </div>
+
+            <div>
+              <span>Replay objective</span>
+              <p>{coachResult.debrief.replay_objective}</p>
+            </div>
+
+            <div>
+              <span>Success criteria</span>
+              <ul>
+                {coachResult.debrief.replay_success_criteria.map(
+                  (criterion) => (
+                    <li key={criterion}>{criterion}</li>
+                  ),
+                )}
+              </ul>
+            </div>
+          </div>
+
+          <p className="coach-disclaimer">
+            AI-generated educational feedback based only on the
+            verified deterministic timeline and score.
+          </p>
         </section>
       ) : null}
 
