@@ -18,3 +18,9 @@ class ApplySessionActionRequest(BaseModel):
 class SessionScoreResponse(BaseModel):
     session: SimulationSession
     score: SessionScore
+
+
+class ReplaySessionRequest(BaseModel):
+    session: SimulationSession
+    replay_from_seconds: int = Field(ge=0, le=600)
+

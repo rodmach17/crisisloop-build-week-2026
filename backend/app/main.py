@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.app.coach.service import generate_adaptive_debrief
@@ -8,6 +8,7 @@ from backend.app.engine.scenario import create_initial_patient_state
 from backend.app.engine.session import (
     advance_session,
     apply_action_to_session,
+    create_replay_session,
     create_simulation_session,
 )
 from backend.app.schemas.actions import ApplyActionRequest, ActionResult
@@ -19,6 +20,7 @@ from backend.app.schemas.patient import PatientState
 from backend.app.schemas.session_api import (
     AdvanceSessionRequest,
     ApplySessionActionRequest,
+    ReplaySessionRequest,
     SessionScoreResponse,
 )
 from backend.app.schemas.simulation import (
@@ -144,4 +146,19 @@ def create_adaptive_debrief(
         score=score,
         language=request.language,
     )
+
+@app.post("/session/replay", response_model=SimulationSession)
+def create_replay(
+    request: ReplaySessionRequest,
+) -> SimulationSession:
+    try:
+        return create_replay_session(
+            source_session=request.session,
+            replay_from_seconds=request.replay_from_seconds,
+        )
+    except ValueError as error:
+        raise HTTPException(
+            status_code=400,
+            detail=str(error),
+        ) from error
 
