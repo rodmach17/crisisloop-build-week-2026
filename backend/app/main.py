@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from backend.app.coach.service import generate_adaptive_debrief
 from backend.app.engine.interventions import apply_clinical_action
 from backend.app.engine.progression import advance_patient_state
 from backend.app.engine.scenario import create_initial_patient_state
@@ -10,6 +11,10 @@ from backend.app.engine.session import (
     create_simulation_session,
 )
 from backend.app.schemas.actions import ApplyActionRequest, ActionResult
+from backend.app.schemas.coach import (
+    CoachDebriefRequest,
+    CoachDebriefResponse,
+)
 from backend.app.schemas.patient import PatientState
 from backend.app.schemas.session_api import (
     AdvanceSessionRequest,
@@ -127,3 +132,15 @@ def score_session(
         session=session,
         score=evaluate_session(session),
     )
+
+@app.post("/coach/debrief", response_model=CoachDebriefResponse)
+def create_adaptive_debrief(
+    request: CoachDebriefRequest,
+) -> CoachDebriefResponse:
+    score = evaluate_session(request.session)
+
+    return generate_adaptive_debrief(
+        session=request.session,
+        score=score,
+    )
+
