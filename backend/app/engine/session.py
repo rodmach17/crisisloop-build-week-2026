@@ -61,3 +61,45 @@ def apply_action_to_session(
     updated.timeline.append(event)
 
     return updated
+
+
+def create_replay_session(
+    source_session: SimulationSession,
+    replay_from_seconds: int,
+) -> SimulationSession:
+    """Create a new deterministic session at a prior replay checkpoint."""
+    if replay_from_seconds < 0:
+        raise ValueError("Replay time cannot be negative.")
+
+    if replay_from_seconds > source_session.current_state.elapsed_seconds:
+        raise ValueError(
+            "Replay time cannot exceed the source session elapsed time."
+        )
+
+    replay_session = create_simulation_session()
+
+    if replay_from_seconds == 0:
+        return replay_session
+
+    initial = replay_session.current_state.model_copy(deep=True)
+    checkpoint = advance_patient_state(
+        initial,
+        replay_from_seconds,
+    )
+
+    replay_event = TimelineEvent(
+        elapsed_seconds=checkpoint.elapsed_seconds,
+        event_type="replay_checkpoint",
+        description=(
+            "Adaptive replay initialized at "
+            f"{replay_from_seconds} seconds."
+        ),
+        state_before=initial,
+        state_after=checkpoint,
+    )
+
+    replay_session.current_state = checkpoint
+    replay_session.timeline.append(replay_event)
+
+    return replay_session
+
