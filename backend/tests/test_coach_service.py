@@ -56,3 +56,34 @@ def test_coach_prompt_requires_concise_feedback() -> None:
     assert "Be concise and operational" in service_text
     assert "Avoid essays, protocol digressions" in service_text
 
+
+def test_compact_list_item_keeps_first_sentence() -> None:
+    from backend.app.coach.service import _compact_list_item
+
+    result = _compact_list_item(
+        (
+            "Iniciar líquidos intravenosos de inmediato. "
+            "Este texto adicional no debe mostrarse."
+        ),
+        max_length=180,
+    )
+
+    assert result == "Iniciar líquidos intravenosos de inmediato."
+
+
+def test_compact_list_item_removes_long_disclaimer_tail() -> None:
+    from backend.app.coach.service import _compact_list_item
+
+    result = _compact_list_item(
+        (
+            "Iniciar líquidos intravenosos para apoyar la circulación "
+            "durante la hemorragia activa, dentro del escenario simulado "
+            "educativo únicamente y sin sustituir protocolos reales."
+        ),
+        max_length=90,
+    )
+
+    assert len(result) <= 91
+    assert result.startswith("Iniciar líquidos intravenosos")
+    assert "protocolos reales" not in result
+

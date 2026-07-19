@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -22,6 +23,63 @@ def determine_replay_from_seconds(score: SessionScore) -> int:
         return 0
 
     return max(0, score.critical_decision.elapsed_seconds - 30)
+
+
+def _compact_list_item(
+    value: str,
+    max_length: int,
+) -> str:
+    """Keep one concise, operational statement per list item."""
+    compact = " ".join(value.split()).strip()
+
+    sentence_match = re.match(
+        r"^(.+?[.!?。！？])(?:\s|$)",
+        compact,
+    )
+    if sentence_match:
+        compact = sentence_match.group(1).strip()
+
+    if len(compact) <= max_length:
+        return compact
+
+    candidate = compact[:max_length]
+
+    for separator in (";", ":", ","):
+        position = candidate.rfind(separator)
+        if position >= 40:
+            candidate = candidate[:position]
+            break
+    else:
+        position = candidate.rfind(" ")
+        if position >= 40:
+            candidate = candidate[:position]
+
+    return candidate.rstrip(" ,;:") + "."
+
+
+def _compact_debrief(
+    debrief: AdaptiveDebriefContent,
+) -> AdaptiveDebriefContent:
+    """Apply deterministic presentation limits after structured parsing."""
+    return AdaptiveDebriefContent(
+        performance_summary=debrief.performance_summary,
+        strengths=[
+            _compact_list_item(item, 180)
+            for item in debrief.strengths
+        ],
+        improvement_priorities=[
+            _compact_list_item(item, 180)
+            for item in debrief.improvement_priorities
+        ],
+        clinical_reasoning_explanation=(
+            debrief.clinical_reasoning_explanation
+        ),
+        replay_objective=debrief.replay_objective,
+        replay_success_criteria=[
+            _compact_list_item(item, 160)
+            for item in debrief.replay_success_criteria
+        ],
+    )
 
 
 def _load_environment() -> None:
@@ -107,6 +165,8 @@ def generate_adaptive_debrief(
         raise RuntimeError(
             "GPT-5.6 did not return a valid structured debrief."
         )
+
+    debrief = _compact_debrief(debrief)
 
     return CoachDebriefResponse(
         session_id=session.session_id,
