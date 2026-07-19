@@ -774,7 +774,9 @@ function App() {
                     <strong>
                       {event.action
                         ? event.action.replaceAll("_", " ")
-                        : "Time advanced"}
+                        : event.event_type === "replay_checkpoint"
+                          ? "Adaptive replay checkpoint"
+                          : "Time advanced"}
                     </strong>
                     <p>{event.description}</p>
                   </div>
