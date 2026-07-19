@@ -611,3 +611,37 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 }
+
+.coach-controls {
+  display: grid;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.coach-controls label {
+  color: #7f8da1;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.coach-controls select,
+.coach-controls input {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #2a3b50;
+  border-radius: 10px;
+  background: #0b121d;
+  color: #d8e4f0;
+}
+
+.coach-controls select {
+  cursor: pointer;
+}
+
+.coach-controls select:focus,
+.coach-controls input:focus {
+  border-color: #4c7ba4;
+  outline: none;
+}

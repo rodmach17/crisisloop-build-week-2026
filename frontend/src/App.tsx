@@ -70,6 +70,7 @@ type AdaptiveDebrief = {
 type CoachDebriefResponse = {
   session_id: string;
   model: string;
+  language: string;
   score: SessionScore;
   replay_from_seconds: number;
   debrief: AdaptiveDebrief;
@@ -102,6 +103,10 @@ function App() {
   const [score, setScore] = useState<SessionScore | null>(null);
   const [coachResult, setCoachResult] =
     useState<CoachDebriefResponse | null>(null);
+  const [coachLanguageOption, setCoachLanguageOption] =
+    useState("English");
+  const [customCoachLanguage, setCustomCoachLanguage] =
+    useState("");
   const [loading, setLoading] = useState(true);
   const [busyAction, setBusyAction] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -257,6 +262,16 @@ function App() {
   async function generateAdaptiveDebrief() {
     if (!session) return;
 
+    const selectedLanguage =
+      coachLanguageOption === "Other"
+        ? customCoachLanguage.trim()
+        : coachLanguageOption;
+
+    if (!selectedLanguage) {
+      setError("Please enter a valid debrief language.");
+      return;
+    }
+
     setBusyAction("coach");
     setError(null);
 
@@ -268,6 +283,7 @@ function App() {
         },
         body: JSON.stringify({
           session,
+          language: selectedLanguage,
         }),
       });
 
@@ -493,10 +509,51 @@ function App() {
             {busyAction === "score" ? "Scoring..." : "Calculate score"}
           </button>
 
+          <div className="coach-controls">
+            <label htmlFor="coach-language">
+              Debrief language
+            </label>
+
+            <select
+              id="coach-language"
+              value={coachLanguageOption}
+              disabled={busyAction !== null}
+              onChange={(event) => {
+                setCoachLanguageOption(event.target.value);
+                setCoachResult(null);
+              }}
+            >
+              <option value="English">English</option>
+              <option value="Español">Español</option>
+              <option value="Português">Português</option>
+              <option value="Français">Français</option>
+              <option value="Other">Other…</option>
+            </select>
+
+            {coachLanguageOption === "Other" ? (
+              <input
+                type="text"
+                maxLength={40}
+                value={customCoachLanguage}
+                disabled={busyAction !== null}
+                placeholder="Example: Deutsch, 日本語, Italiano"
+                onChange={(event) => {
+                  setCustomCoachLanguage(event.target.value);
+                  setCoachResult(null);
+                }}
+              />
+            ) : null}
+          </div>
+
           <button
             className="coach-button"
             type="button"
-            disabled={busyAction !== null || score === null}
+            disabled={
+              busyAction !== null ||
+              score === null ||
+              (coachLanguageOption === "Other" &&
+                customCoachLanguage.trim().length < 2)
+            }
             onClick={() => void generateAdaptiveDebrief()}
           >
             {busyAction === "coach"
@@ -614,7 +671,7 @@ function App() {
               <h3>Personalized debrief</h3>
             </div>
             <span className="coach-model">
-              {coachResult.model}
+              {coachResult.model} · {coachResult.language}
             </span>
           </div>
 
