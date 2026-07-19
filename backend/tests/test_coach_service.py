@@ -33,3 +33,14 @@ def test_replay_uses_deterministic_critical_decision_time() -> None:
     )
 
     assert determine_replay_from_seconds(score) == 90
+
+
+def test_coach_prompt_hides_internal_action_identifiers() -> None:
+    from pathlib import Path
+
+    service_text = Path(
+        "backend/app/coach/service.py"
+    ).read_text()
+
+    assert "Never expose internal enum values" in service_text
+    assert "Each list item must contain exactly one clear idea" in service_text
