@@ -32,4 +32,4 @@ def test_replay_uses_deterministic_critical_decision_time() -> None:
         )
     )
 
-    assert determine_replay_from_seconds(score) == 120
+    assert determine_replay_from_seconds(score) == 90

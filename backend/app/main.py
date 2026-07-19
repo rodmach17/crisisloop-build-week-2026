@@ -142,5 +142,6 @@ def create_adaptive_debrief(
     return generate_adaptive_debrief(
         session=request.session,
         score=score,
+        language=request.language,
     )
 

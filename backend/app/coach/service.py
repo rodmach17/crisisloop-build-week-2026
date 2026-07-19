@@ -8,6 +8,7 @@ from openai import OpenAI
 from backend.app.schemas.coach import (
     AdaptiveDebriefContent,
     CoachDebriefResponse,
+    CoachLanguage,
 )
 from backend.app.schemas.scoring import SessionScore
 from backend.app.schemas.timeline import SimulationSession
@@ -17,11 +18,11 @@ DEFAULT_COACH_MODEL = "gpt-5.6-sol"
 
 
 def determine_replay_from_seconds(score: SessionScore) -> int:
-    """Return a deterministic replay point selected by the application."""
+    """Start replay before the deterministic critical decision."""
     if score.critical_decision is None:
         return 0
 
-    return score.critical_decision.elapsed_seconds
+    return max(0, score.critical_decision.elapsed_seconds - 30)
 
 
 def _load_environment() -> None:
@@ -32,6 +33,7 @@ def _load_environment() -> None:
 def generate_adaptive_debrief(
     session: SimulationSession,
     score: SessionScore,
+    language: CoachLanguage = "en",
     client: OpenAI | None = None,
 ) -> CoachDebriefResponse:
     """Generate educational feedback without changing simulation state."""
@@ -43,11 +45,15 @@ def generate_adaptive_debrief(
     )
     openai_client = client or OpenAI()
 
+    replay_from_seconds = determine_replay_from_seconds(score)
+    language_name = "Spanish" if language == "es" else "English"
+
     verified_payload = {
         "scenario": "Occult postoperative hemorrhage with hypovolemic shock",
         "session": session.model_dump(mode="json"),
         "deterministic_score": score.model_dump(mode="json"),
-        "replay_from_seconds": determine_replay_from_seconds(score),
+        "replay_from_seconds": replay_from_seconds,
+        "output_language": language,
     }
 
     response = openai_client.responses.parse(
@@ -58,12 +64,21 @@ def generate_adaptive_debrief(
                 "role": "system",
                 "content": (
                     "You are the adaptive educational coach for CrisisLoop. "
-                    "Use only the verified simulation timeline and deterministic "
-                    "score supplied by the application. Do not invent actions, "
-                    "times, vital signs, outcomes, or scores. Do not modify the "
-                    "simulation. Provide concise educational feedback for a "
-                    "medical learner. This prototype is for education only and "
-                    "must not be presented as patient-specific medical advice."
+                    "Use only the verified timeline and deterministic score. "
+                    "Do not invent actions, times, vital signs, outcomes, or "
+                    "scores. Do not modify the simulation. "
+                    f"Write every field in {language_name}. "
+                    "Strengths must describe learner actions that are explicitly "
+                    "documented in the timeline and were clinically appropriate. "
+                    "Never describe residual score points, missing data, absence "
+                    "of unverified actions, system behavior, or completion of the "
+                    "simulation as learner strengths. If no genuine learner "
+                    "strength is documented, state honestly that no demonstrated "
+                    "clinical strength was recorded in this attempt. "
+                    "Improvement priorities must be specific and supported by the "
+                    "verified evidence. The replay time is fixed by the application "
+                    "and must not be changed. This is educational simulation "
+                    "feedback, not patient-specific medical advice."
                 ),
             },
             {
@@ -86,8 +101,9 @@ def generate_adaptive_debrief(
     return CoachDebriefResponse(
         session_id=session.session_id,
         model=selected_model,
+        language=language,
         score=score,
-        replay_from_seconds=determine_replay_from_seconds(score),
+        replay_from_seconds=replay_from_seconds,
         debrief=debrief,
         educational_use_only=True,
     )

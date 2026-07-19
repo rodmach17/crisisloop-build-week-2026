@@ -15,12 +15,14 @@ def test_coach_debrief_endpoint_returns_structured_response(
     def fake_generate_adaptive_debrief(
         session,
         score,
+        language,
     ) -> CoachDebriefResponse:
         return CoachDebriefResponse(
             session_id=session.session_id,
             model="gpt-5.6-sol",
+            language=language,
             score=score,
-            replay_from_seconds=120,
+            replay_from_seconds=90,
             debrief=AdaptiveDebriefContent(
                 performance_summary="Delayed recognition was identified.",
                 strengths=["The simulation was completed."],
@@ -65,6 +67,7 @@ def test_coach_debrief_endpoint_returns_structured_response(
         "/coach/debrief",
         json={
             "session": advance_response.json(),
+            "language": "es",
         },
     )
 
@@ -73,6 +76,7 @@ def test_coach_debrief_endpoint_returns_structured_response(
     result = response.json()
 
     assert result["model"] == "gpt-5.6-sol"
-    assert result["replay_from_seconds"] == 120
+    assert result["replay_from_seconds"] == 90
+    assert result["language"] == "es"
     assert result["educational_use_only"] is True
     assert result["score"]["critical_decision"]["elapsed_seconds"] == 120
