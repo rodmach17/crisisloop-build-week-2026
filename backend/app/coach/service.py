@@ -82,7 +82,11 @@ def generate_adaptive_debrief(
                     "clinical language appropriate for the selected output language. "
                     "Each list item must contain exactly one clear idea. Do not merge "
                     "multiple priorities into one item and do not include stray quotation "
-                    "marks or code formatting. The replay time is fixed by the application "
+                    "marks or code formatting. Be concise and operational. Use no more "
+                    "than two short sentences in any list item. Do not repeat the educational "
+                    "disclaimer inside the structured fields. Avoid essays, protocol digressions, "
+                    "hypothetical treatment details, and repeated explanations. The replay time "
+                    "is fixed by the application "
                     "and must not be changed. This is educational simulation "
                     "feedback, not patient-specific medical advice."
                 ),

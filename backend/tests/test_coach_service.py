@@ -44,3 +44,15 @@ def test_coach_prompt_hides_internal_action_identifiers() -> None:
 
     assert "Never expose internal enum values" in service_text
     assert "Each list item must contain exactly one clear idea" in service_text
+
+
+def test_coach_prompt_requires_concise_feedback() -> None:
+    from pathlib import Path
+
+    service_text = Path(
+        "backend/app/coach/service.py"
+    ).read_text()
+
+    assert "Be concise and operational" in service_text
+    assert "Avoid essays, protocol digressions" in service_text
+
