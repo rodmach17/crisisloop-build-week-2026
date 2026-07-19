@@ -1,16 +1,66 @@
-from pydantic import BaseModel, Field, field_validator
+from typing import Annotated
+
+from pydantic import (
+    BaseModel,
+    Field,
+    StringConstraints,
+    field_validator,
+)
 
 from backend.app.schemas.scoring import SessionScore
 from backend.app.schemas.timeline import SimulationSession
 
 
+StrengthText = Annotated[
+    str,
+    StringConstraints(
+        strip_whitespace=True,
+        min_length=1,
+        max_length=220,
+    ),
+]
+
+PriorityText = Annotated[
+    str,
+    StringConstraints(
+        strip_whitespace=True,
+        min_length=1,
+        max_length=300,
+    ),
+]
+
+SuccessCriterionText = Annotated[
+    str,
+    StringConstraints(
+        strip_whitespace=True,
+        min_length=1,
+        max_length=220,
+    ),
+]
+
+
 class AdaptiveDebriefContent(BaseModel):
-    performance_summary: str = Field(min_length=1)
-    strengths: list[str] = Field(min_length=1, max_length=3)
-    improvement_priorities: list[str] = Field(min_length=1, max_length=3)
-    clinical_reasoning_explanation: str = Field(min_length=1)
-    replay_objective: str = Field(min_length=1)
-    replay_success_criteria: list[str] = Field(
+    performance_summary: str = Field(
+        min_length=1,
+        max_length=600,
+    )
+    strengths: list[StrengthText] = Field(
+        min_length=1,
+        max_length=3,
+    )
+    improvement_priorities: list[PriorityText] = Field(
+        min_length=1,
+        max_length=3,
+    )
+    clinical_reasoning_explanation: str = Field(
+        min_length=1,
+        max_length=900,
+    )
+    replay_objective: str = Field(
+        min_length=1,
+        max_length=350,
+    )
+    replay_success_criteria: list[SuccessCriterionText] = Field(
         min_length=1,
         max_length=3,
     )
