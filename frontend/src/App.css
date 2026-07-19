@@ -671,3 +671,17 @@ button:disabled {
   color: #738195;
   font-size: 0.76rem;
 }
+
+.replay-notice {
+  margin-bottom: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(47, 129, 247, 0.45);
+  border-radius: 0.75rem;
+  background: rgba(47, 129, 247, 0.1);
+  font-weight: 700;
+}
+
+.replay-card > .coach-button {
+  width: 100%;
+  margin-top: 0.5rem;
+}

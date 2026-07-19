@@ -150,12 +150,15 @@ function App() {
   const [busyAction, setBusyAction] = useState<string | null>(null);
   const [coachElapsedSeconds, setCoachElapsedSeconds] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [replayNotice, setReplayNotice] = useState<string | null>(null);
+  const scenarioSectionRef = useRef<HTMLElement | null>(null);
   const scoreSectionRef = useRef<HTMLElement | null>(null);
   const coachSectionRef = useRef<HTMLElement | null>(null);
 
   async function createSession() {
     setLoading(true);
     setError(null);
+    setReplayNotice(null);
     setScore(null);
     setCoachResult(null);
 
@@ -388,6 +391,66 @@ function App() {
     }
   }
 
+  async function startAdaptiveReplay() {
+    if (!session || !coachResult) return;
+
+    const replayFromSeconds = coachResult.replay_from_seconds;
+
+    setBusyAction("replay");
+    setError(null);
+    setReplayNotice(null);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/session/replay`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          session,
+          replay_from_seconds: replayFromSeconds,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorPayload = await response
+          .json()
+          .catch(() => null);
+
+        throw new Error(
+          errorPayload?.detail ??
+            `Replay creation failed: ${response.status}`,
+        );
+      }
+
+      const replaySession: SimulationSession = await response.json();
+
+      setSession(replaySession);
+      setScore(null);
+      setCoachResult(null);
+      setReplayNotice(
+        coachLanguageOption === "Español"
+          ? `Repetición activa desde ${formatElapsedTime(replayFromSeconds)}. Intenta corregir las decisiones críticas.`
+          : `Replay active from ${formatElapsedTime(replayFromSeconds)}. Try to correct the critical decisions.`,
+      );
+
+      window.setTimeout(() => {
+        scenarioSectionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 100);
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Unable to start the adaptive replay.",
+      );
+    } finally {
+      setBusyAction(null);
+    }
+  }
+
   const coachUiLanguage =
     coachLanguageOption === "Español" ? "es" : "en";
   const coachCopy = coachUiCopy[coachUiLanguage];
@@ -462,7 +525,16 @@ function App() {
 
       {error ? <div className="error-banner">{error}</div> : null}
 
-      <section className="scenario-header">
+      {replayNotice ? (
+        <div className="replay-notice" role="status">
+          {replayNotice}
+        </div>
+      ) : null}
+
+      <section
+        ref={scenarioSectionRef}
+        className="scenario-header"
+      >
         <div>
           <p className="section-label">Scenario</p>
           <h2>Occult postoperative hemorrhagic shock</h2>
@@ -834,6 +906,25 @@ function App() {
                 )}
               </ul>
             </div>
+
+            <button
+              className="coach-button"
+              type="button"
+              disabled={busyAction !== null}
+              onClick={() => void startAdaptiveReplay()}
+            >
+              {busyAction === "replay"
+                ? coachUiLanguage === "es"
+                  ? "Iniciando repetición..."
+                  : "Starting replay..."
+                : coachUiLanguage === "es"
+                  ? `Iniciar repetición desde ${formatElapsedTime(
+                      coachResult.replay_from_seconds,
+                    )}`
+                  : `Start replay from ${formatElapsedTime(
+                      coachResult.replay_from_seconds,
+                    )}`}
+            </button>
           </div>
 
           <p className="coach-disclaimer">
