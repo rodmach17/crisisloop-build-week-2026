@@ -148,6 +148,7 @@ function App() {
     useState("");
   const [loading, setLoading] = useState(true);
   const [busyAction, setBusyAction] = useState<string | null>(null);
+  const [coachElapsedSeconds, setCoachElapsedSeconds] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const scoreSectionRef = useRef<HTMLElement | null>(null);
   const coachSectionRef = useRef<HTMLElement | null>(null);
@@ -183,6 +184,21 @@ function App() {
   useEffect(() => {
     void createSession();
   }, []);
+
+  useEffect(() => {
+    if (busyAction !== "coach") {
+      setCoachElapsedSeconds(0);
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setCoachElapsedSeconds((current) => current + 1);
+    }, 1000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [busyAction]);
 
   async function advanceTime(seconds: number) {
     if (!session) return;
@@ -312,7 +328,13 @@ function App() {
     }
 
     setBusyAction("coach");
+    setCoachElapsedSeconds(0);
     setError(null);
+
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => {
+      controller.abort();
+    }, 75_000);
 
     try {
       const response = await fetch(`${API_BASE_URL}/coach/debrief`, {
@@ -324,6 +346,7 @@ function App() {
           session,
           language: selectedLanguage,
         }),
+        signal: controller.signal,
       });
 
       if (!response.ok) {
@@ -343,12 +366,24 @@ function App() {
         });
       }, 100);
     } catch (requestError) {
-      setError(
-        requestError instanceof Error
-          ? requestError.message
-          : "Unable to generate the adaptive debrief.",
-      );
+      if (
+        requestError instanceof DOMException &&
+        requestError.name === "AbortError"
+      ) {
+        setError(
+          coachUiLanguage === "es"
+            ? "La generación excedió 75 segundos. Intenta nuevamente."
+            : "Generation exceeded 75 seconds. Please try again.",
+        );
+      } else {
+        setError(
+          requestError instanceof Error
+            ? requestError.message
+            : "Unable to generate the adaptive debrief.",
+        );
+      }
     } finally {
+      window.clearTimeout(timeoutId);
       setBusyAction(null);
     }
   }
@@ -589,6 +624,26 @@ function App() {
               />
             ) : null}
           </div>
+
+          {busyAction === "coach" ? (
+            <div className="coach-loading-status" role="status">
+              <strong>
+                {coachUiLanguage === "es"
+                  ? "Analizando la cronología verificada con GPT-5.6"
+                  : "Analyzing the verified timeline with GPT-5.6"}
+              </strong>
+              <span>
+                {coachUiLanguage === "es"
+                  ? `Tiempo transcurrido: ${coachElapsedSeconds} s`
+                  : `Elapsed time: ${coachElapsedSeconds} s`}
+              </span>
+              <small>
+                {coachUiLanguage === "es"
+                  ? "La generación puede tardar hasta un minuto."
+                  : "Generation may take up to one minute."}
+              </small>
+            </div>
+          ) : null}
 
           <button
             className="coach-button"
