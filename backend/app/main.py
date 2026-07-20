@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -39,13 +41,24 @@ app = FastAPI(
     description="Backend for the CrisisLoop adaptive clinical crisis simulator.",
 )
 
+DEFAULT_ALLOWED_ORIGINS = (
+    "http://127.0.0.1:5173,"
+    "http://localhost:5173"
+)
+
+allowed_origins = [
+    origin.strip()
+    for origin in os.getenv(
+        "CRISISLOOP_ALLOWED_ORIGINS",
+        DEFAULT_ALLOWED_ORIGINS,
+    ).split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://127.0.0.1:5173",
-        "http://localhost:5173",
-    ],
-    allow_credentials=True,
+    allow_origins=allowed_origins,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
