@@ -10,12 +10,13 @@ It trains clinical decision-making under pressure by combining a deterministic p
 
 1. The learner manages a time-sensitive clinical crisis.
 2. A deterministic engine advances the patient's physiological state.
-3. Every action, omission, and delay is recorded.
-4. CrisisLoop identifies the critical decision point.
-5. GPT-5.6 analyzes the verified decision trace.
-6. The system generates a measurable learning objective.
-7. The learner replays the crisis from the critical moment.
-8. CrisisLoop compares both attempts and quantifies improvement.
+3. Every action, omission and delay is recorded.
+4. A deterministic scoring engine evaluates performance.
+5. CrisisLoop identifies the critical decision point.
+6. GPT-5.6 analyzes only the verified timeline and score.
+7. The system generates structured adaptive feedback.
+8. The learner replays the crisis from shortly before the failure.
+9. The learner attempts a corrected sequence of decisions.
 
 ## Initial scenario
 
@@ -65,17 +66,16 @@ These components are deterministic, reproducible, and testable.
 
 ## GPT-5.6 integration
 
-GPT-5.6 analyzes the verified simulation trace to:
+GPT-5.6 analyzes the verified simulation timeline and deterministic score to:
 
-- identify the dominant reasoning error;
+- summarize performance;
+- identify evidence-based strengths;
 - explain missed clinical cues;
-- generate an educational debrief;
-- define a measurable learning objective;
-- configure an adaptive replay;
-- adjust difficulty and distractors;
-- recommend progression or repetition.
+- define improvement priorities;
+- generate a replay objective;
+- establish measurable success criteria.
 
-Model responses will use validated structured output.
+Model responses use validated structured output. GPT-5.6 does not control physiology, intervention effects, safety rules, patient outcomes, scores or replay timing.
 
 ## Repository structure
 
@@ -91,9 +91,15 @@ Model responses will use validated structured output.
 
 ## Current status
 
-The repository and Build Week scope are initialized.
+A functional browser MVP is running locally.
 
-Application implementation has not started yet.
+Implemented capabilities include deterministic physiological progression, learner actions, decision timeline, deterministic scoring, critical decision detection, structured GPT-5.6 multilingual coaching and adaptive replay from the calculated pre-failure checkpoint.
+
+Current validation baseline:
+
+- 33 automated backend and API tests passing;
+- frontend production build successful;
+- complete simulation, debrief and replay workflow verified in the browser.
 
 ## Safety notice
 
@@ -109,5 +115,5 @@ Deliver a browser-based MVP in which a judge can:
 2. observe deterministic consequences;
 3. review the critical decision timeline;
 4. receive structured adaptive coaching;
-5. replay the failure point;
-6. demonstrate quantified improvement.
+5. replay the crisis from the calculated pre-failure checkpoint;
+6. attempt a corrected sequence of decisions.
