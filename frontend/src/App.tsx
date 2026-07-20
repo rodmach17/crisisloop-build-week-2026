@@ -58,6 +58,30 @@ type SessionScore = {
   } | null;
 };
 
+type ImprovementOutcome =
+  | "improved"
+  | "unchanged"
+  | "worsened";
+
+type ActionTimingComparison = {
+  action: string;
+  initial_time_seconds: number | null;
+  replay_time_seconds: number | null;
+  seconds_faster: number | null;
+  omission_corrected: boolean;
+};
+
+type SessionComparison = {
+  initial_score: SessionScore;
+  replay_score: SessionScore;
+  score_delta: number;
+  harm_reduction: number;
+  corrected_omissions: string[];
+  new_omissions: string[];
+  action_timings: ActionTimingComparison[];
+  outcome: ImprovementOutcome;
+};
+
 type AdaptiveDebrief = {
   performance_summary: string;
   strengths: string[];
@@ -142,6 +166,10 @@ function App() {
   const [score, setScore] = useState<SessionScore | null>(null);
   const [coachResult, setCoachResult] =
     useState<CoachDebriefResponse | null>(null);
+  const [initialAttempt, setInitialAttempt] =
+    useState<SimulationSession | null>(null);
+  const [comparison, setComparison] =
+    useState<SessionComparison | null>(null);
   const [coachLanguageOption, setCoachLanguageOption] =
     useState("English");
   const [customCoachLanguage, setCustomCoachLanguage] =
@@ -153,6 +181,7 @@ function App() {
   const [replayNotice, setReplayNotice] = useState<string | null>(null);
   const scenarioSectionRef = useRef<HTMLElement | null>(null);
   const scoreSectionRef = useRef<HTMLElement | null>(null);
+  const comparisonSectionRef = useRef<HTMLElement | null>(null);
   const coachSectionRef = useRef<HTMLElement | null>(null);
 
   async function createSession() {
@@ -161,6 +190,8 @@ function App() {
     setReplayNotice(null);
     setScore(null);
     setCoachResult(null);
+    setInitialAttempt(null);
+    setComparison(null);
 
     try {
       const response = await fetch(`${API_BASE_URL}/session`, {
@@ -229,6 +260,7 @@ function App() {
       setSession(data);
       setScore(null);
       setCoachResult(null);
+      setComparison(null);
     } catch (requestError) {
       setError(
         requestError instanceof Error
@@ -266,6 +298,7 @@ function App() {
       setSession(data);
       setScore(null);
       setCoachResult(null);
+      setComparison(null);
     } catch (requestError) {
       setError(
         requestError instanceof Error
@@ -282,6 +315,7 @@ function App() {
 
     setBusyAction("score");
     setError(null);
+    setComparison(null);
 
     try {
       const response = await fetch(`${API_BASE_URL}/session/score`, {
@@ -296,16 +330,59 @@ function App() {
         throw new Error(`Scoring failed: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data: {
+        session: SimulationSession;
+        score: SessionScore;
+      } = await response.json();
+
       setSession(data.session);
       setScore(data.score);
 
-      window.setTimeout(() => {
-        scoreSectionRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }, 100);
+      if (initialAttempt) {
+        const compareResponse = await fetch(
+          `${API_BASE_URL}/session/compare`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              initial_session: initialAttempt,
+              replay_session: data.session,
+            }),
+          },
+        );
+
+        if (!compareResponse.ok) {
+          const errorPayload = await compareResponse
+            .json()
+            .catch(() => null);
+
+          throw new Error(
+            errorPayload?.detail ??
+              `Session comparison failed: ${compareResponse.status}`,
+          );
+        }
+
+        const comparisonData: SessionComparison =
+          await compareResponse.json();
+
+        setComparison(comparisonData);
+
+        window.setTimeout(() => {
+          comparisonSectionRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }, 100);
+      } else {
+        window.setTimeout(() => {
+          scoreSectionRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }, 100);
+      }
     } catch (requestError) {
       setError(
         requestError instanceof Error
@@ -425,6 +502,8 @@ function App() {
 
       const replaySession: SimulationSession = await response.json();
 
+      setInitialAttempt(session);
+      setComparison(null);
       setSession(replaySession);
       setScore(null);
       setCoachResult(null);
@@ -831,6 +910,148 @@ function App() {
               No critical decision failure detected.
             </div>
           )}
+        </section>
+      ) : null}
+
+      {comparison ? (
+        <section
+          ref={comparisonSectionRef}
+          className={`panel comparison-panel comparison-${comparison.outcome}`}
+        >
+          <div className="comparison-heading">
+            <div>
+              <p className="section-label">
+                Deterministic learning comparison
+              </p>
+              <h3>
+                {comparison.outcome === "improved"
+                  ? "Performance improved"
+                  : comparison.outcome === "worsened"
+                    ? "Performance worsened"
+                    : "Performance unchanged"}
+              </h3>
+            </div>
+
+            <span className="comparison-outcome">
+              {comparison.outcome}
+            </span>
+          </div>
+
+          <div className="comparison-score-grid">
+            <article>
+              <span>Initial score</span>
+              <strong>
+                {comparison.initial_score.total_score}
+                <small>/100</small>
+              </strong>
+            </article>
+
+            <article>
+              <span>Replay score</span>
+              <strong>
+                {comparison.replay_score.total_score}
+                <small>/100</small>
+              </strong>
+            </article>
+
+            <article>
+              <span>Score change</span>
+              <strong>
+                {comparison.score_delta > 0 ? "+" : ""}
+                {comparison.score_delta}
+              </strong>
+            </article>
+
+            <article>
+              <span>Harm reduction</span>
+              <strong>
+                {comparison.harm_reduction > 0 ? "-" : ""}
+                {Math.abs(comparison.harm_reduction)}
+                <small> points</small>
+              </strong>
+            </article>
+          </div>
+
+          <div className="comparison-details-grid">
+            <article>
+              <span>Corrected omissions</span>
+              {comparison.corrected_omissions.length > 0 ? (
+                <ul>
+                  {comparison.corrected_omissions.map((action) => (
+                    <li key={action}>
+                      {action.replaceAll("_", " ")}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>None corrected.</p>
+              )}
+            </article>
+
+            <article>
+              <span>New omissions</span>
+              {comparison.new_omissions.length > 0 ? (
+                <ul>
+                  {comparison.new_omissions.map((action) => (
+                    <li key={action}>
+                      {action.replaceAll("_", " ")}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No new omissions.</p>
+              )}
+            </article>
+          </div>
+
+          <div className="comparison-timings">
+            <span>Action timing</span>
+
+            <div className="comparison-timing-list">
+              {comparison.action_timings.map((timing) => (
+                <article key={timing.action}>
+                  <strong>
+                    {timing.action.replaceAll("_", " ")}
+                  </strong>
+
+                  <p>
+                    Initial:{" "}
+                    {timing.initial_time_seconds === null
+                      ? "omitted"
+                      : formatElapsedTime(
+                          timing.initial_time_seconds,
+                        )}
+                    {" · "}
+                    Replay:{" "}
+                    {timing.replay_time_seconds === null
+                      ? "omitted"
+                      : formatElapsedTime(
+                          timing.replay_time_seconds,
+                        )}
+                  </p>
+
+                  {timing.omission_corrected ? (
+                    <small>Omission corrected during replay</small>
+                  ) : timing.seconds_faster !== null ? (
+                    <small>
+                      {timing.seconds_faster > 0
+                        ? `${timing.seconds_faster} seconds faster`
+                        : timing.seconds_faster < 0
+                          ? `${Math.abs(
+                              timing.seconds_faster,
+                            )} seconds slower`
+                          : "Same action time"}
+                    </small>
+                  ) : null}
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <p className="comparison-disclaimer">
+            Improvement values are calculated deterministically from
+            the two verified simulation sessions.
+          </p>
         </section>
       ) : null}
 
