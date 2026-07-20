@@ -965,9 +965,14 @@ function App() {
             <article>
               <span>Harm reduction</span>
               <strong>
-                {comparison.harm_reduction > 0 ? "-" : ""}
                 {Math.abs(comparison.harm_reduction)}
-                <small> points</small>
+                <small>
+                  {comparison.harm_reduction > 0
+                    ? " points lower"
+                    : comparison.harm_reduction < 0
+                      ? " points higher"
+                      : " points"}
+                </small>
               </strong>
             </article>
           </div>
