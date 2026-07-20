@@ -12,6 +12,7 @@ from backend.app.engine.session import (
     create_simulation_session,
 )
 from backend.app.schemas.actions import ApplyActionRequest, ActionResult
+from backend.app.schemas.comparison import SessionComparison
 from backend.app.schemas.coach import (
     CoachDebriefRequest,
     CoachDebriefResponse,
@@ -20,6 +21,7 @@ from backend.app.schemas.patient import PatientState
 from backend.app.schemas.session_api import (
     AdvanceSessionRequest,
     ApplySessionActionRequest,
+    CompareSessionsRequest,
     ReplaySessionRequest,
     SessionScoreResponse,
 )
@@ -29,6 +31,7 @@ from backend.app.schemas.simulation import (
 )
 from backend.app.schemas.timeline import SimulationSession
 from backend.app.scoring.evaluator import evaluate_session
+from backend.app.scoring.comparison import compare_sessions
 
 app = FastAPI(
     title="CrisisLoop API",
@@ -155,6 +158,21 @@ def create_replay(
         return create_replay_session(
             source_session=request.session,
             replay_from_seconds=request.replay_from_seconds,
+        )
+    except ValueError as error:
+        raise HTTPException(
+            status_code=400,
+            detail=str(error),
+        ) from error
+
+@app.post("/session/compare", response_model=SessionComparison)
+def compare_simulation_sessions(
+    request: CompareSessionsRequest,
+) -> SessionComparison:
+    try:
+        return compare_sessions(
+            initial_session=request.initial_session,
+            replay_session=request.replay_session,
         )
     except ValueError as error:
         raise HTTPException(

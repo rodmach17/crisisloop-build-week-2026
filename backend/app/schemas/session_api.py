@@ -24,3 +24,8 @@ class ReplaySessionRequest(BaseModel):
     session: SimulationSession
     replay_from_seconds: int = Field(ge=0, le=600)
 
+
+class CompareSessionsRequest(BaseModel):
+    initial_session: SimulationSession
+    replay_session: SimulationSession
+
