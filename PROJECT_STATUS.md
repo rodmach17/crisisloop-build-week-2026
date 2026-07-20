@@ -16,10 +16,11 @@ The current scenario is:
 
 Complete the competition-facing layer:
 
-1. Quantify improvement between the initial attempt and replay.
-2. Add a replay completion summary.
-3. Polish the judge-facing demo flow.
-4. Prepare deployment and submission materials.
+1. Polish the judge-facing demo flow.
+2. Finalize competition documentation.
+3. Prepare deployment.
+4. Record the submission video.
+5. Package the final Build Week submission.
 
 ## Completed
 
@@ -67,6 +68,14 @@ Complete the competition-facing layer:
 - Replay activation notice.
 - Automatic return to the scenario checkpoint.
 - Correct replay timeline labeling.
+- Automatic comparison between initial attempt and replay.
+- Initial and replay score display.
+- Deterministic score delta.
+- Deterministic harm reduction.
+- Corrected omission detection.
+- New omission detection.
+- Per-action timing comparison.
+- Automatic scrolling to the improvement panel.
 
 ### Validation
 
@@ -89,9 +98,7 @@ Complete the competition-facing layer:
 
 ## Not yet implemented
 
-- Automatic comparison of the first attempt and replay attempt.
-- Quantified improvement delta.
-- Replay completion summary.
+- Persistent replay history beyond the current browser session.
 - Persistent session storage.
 - Authentication or learner accounts.
 - Scenario authoring interface.
@@ -106,7 +113,7 @@ None.
 
 ## Next exact action
 
-Implement deterministic comparison between the original attempt and the replay attempt so CrisisLoop can quantify improvement after deliberate practice.
+Finalize the competition demo narrative and submission package, then prepare public deployment.
 
 ## Current repository path
 
@@ -118,10 +125,13 @@ Implement deterministic comparison between the original attempt and the replay a
 
 ## Current HEAD
 
-`af1288d docs: update README to current MVP state`
+`f751b4c fix: clarify harm reduction display`
 
 ## Current validated baseline
 
-- `33 passed, 1 non-blocking warning`
+- `40 passed, 1 non-blocking warning`
 - Frontend production build successful
-- Complete simulation, debrief and replay workflow verified in browser
+- Complete simulation, debrief, replay and quantified-improvement workflow verified in browser
+- Demonstrated score improvement from `22/100` to `90/100`
+- Demonstrated deterministic score delta of `+68`
+- Demonstrated correction of three critical omissions

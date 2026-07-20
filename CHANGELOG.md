@@ -8,30 +8,52 @@ The format follows a simplified chronological log for OpenAI Build Week 2026.
 
 ### Added
 
-- Independent repository for CrisisLoop.
-- Initial project directory structure.
-- Build Week scope documentation.
-- Project status tracking.
-- Architecture and product decision log.
-- Educational safety boundaries.
-- Separation between deterministic simulation logic and GPT-5.6 coaching responsibilities.
+- Structured GPT-5.6 adaptive debrief using verified deterministic session data.
+- Multilingual debrief generation with English, Spanish, Portuguese, French and custom language support.
+- Concise validated coach output with performance summary, strengths, priorities, reasoning, replay objective and success criteria.
+- Visible GPT-5.6 loading state, elapsed timer and 75-second timeout.
+- Adaptive replay checkpoint calculated before the critical decision failure.
+- Deterministic replay session reconstruction with a new session identifier.
+- Replay API endpoint with controlled validation errors.
+- Frontend replay button, replay activation notice and automatic navigation to the checkpoint.
+- Deterministic comparison between initial attempt and replay attempt.
+- Initial and replay score comparison.
+- Deterministic score delta and harm-reduction calculation.
+- Corrected omission and new omission detection.
+- Per-action timing comparison.
+- Automatic scrolling to the quantified improvement panel.
+- Automated tests for coaching, replay and session comparison.
 
-### Planned
+### Changed
 
-- React and TypeScript frontend.
-- FastAPI backend.
-- Deterministic postoperative hemorrhagic shock scenario.
-- Vital-sign progression engine.
-- Learner action system.
-- Event and decision timeline.
-- Deterministic scoring.
-- Critical decision detection.
-- Structured GPT-5.6 debrief.
-- Adaptive replay.
-- Pre/post comparison.
-- Automated tests.
+- Updated README to reflect the working MVP.
+- Updated project status to reflect the end-to-end simulation, coaching and replay workflow.
+- Constrained GPT-5.6 feedback length for concise judge-facing output.
+- Hid internal identifiers from the learner-facing interface.
+- Improved replay timeline labeling.
+- Clarified harm reduction as a positive reduction rather than a negative value.
+
+### Validated
+
+- Real GPT-5.6 API call with structured output.
+- Full browser flow:
+  simulation → scoring → adaptive debrief → replay → comparison.
+- Replay checkpoint at `01:30`.
+- Initial score `22/100`.
+- Replay score `90/100`.
+- Deterministic score improvement `+68`.
+- Three corrected omissions.
+- Zero new omissions.
+- Frontend production build successful.
+- Backend and API suite passing with `40 tests`.
+
+### Remaining
+
 - Public deployment.
 - Submission video.
+- Final competition package.
+- Additional visual polish.
+- Optional additional scenarios after Build Week.
 
 ## 2026-07-18
 
