@@ -1,5 +1,19 @@
 # CrisisLoop
 
+<p align="center">
+  <img src="docs/submission-assets/00_project_overview.png" alt="CrisisLoop project overview" width="100%">
+</p>
+
+<p align="center">
+  <strong>Fail. Understand. Replay. Improve.</strong>
+</p>
+
+<p align="center">
+  <a href="https://crisisloop-build-week-2026.vercel.app"><strong>Open the live application</strong></a>
+  ·
+  <a href="https://crisisloop-api.onrender.com/health">API health check</a>
+</p>
+
 **Adaptive Clinical Crisis Simulator**
 
 CrisisLoop is an educational simulation prototype built for OpenAI Build Week 2026.
@@ -77,6 +91,59 @@ GPT-5.6 analyzes the verified simulation timeline and deterministic score to:
 
 Model responses use validated structured output. GPT-5.6 does not control physiology, intervention effects, safety rules, patient outcomes, scores or replay timing.
 
+
+## Product walkthrough
+
+### 1. Initial clinical crisis
+
+The learner begins with a postoperative patient showing early signs of deterioration.
+
+<p align="center">
+  <img src="docs/submission-assets/01_crisisloop_initial.png" alt="CrisisLoop initial clinical scenario" width="100%">
+</p>
+
+### 2. Deterministic failure assessment
+
+The simulation engine calculates the physiological consequences, score, harm and critical decision point without language-model control.
+
+<p align="center">
+  <img src="docs/submission-assets/02_deterministic_failure.png" alt="CrisisLoop deterministic failure assessment" width="100%">
+</p>
+
+### 3. Grounded multilingual GPT-5.6 coaching
+
+GPT-5.6 receives only the verified timeline, deterministic score, omissions and replay checkpoint. It generates structured educational feedback without changing simulation truth.
+
+<p align="center">
+  <img src="docs/submission-assets/03_gpt56_adaptive_coach.png" alt="CrisisLoop multilingual GPT-5.6 adaptive coaching" width="100%">
+</p>
+
+### 4. Adaptive replay
+
+The learner resumes from a calculated checkpoint before the critical failure instead of restarting the entire scenario.
+
+<p align="center">
+  <img src="docs/submission-assets/04_adaptive_replay.png" alt="CrisisLoop adaptive replay from calculated checkpoint" width="100%">
+</p>
+
+### 5. Quantified improvement
+
+CrisisLoop deterministically compares both attempts across score, harm, omissions and action timing.
+
+<p align="center">
+  <img src="docs/submission-assets/05_quantified_improvement.png" alt="CrisisLoop quantified improvement comparison" width="100%">
+</p>
+
+Validated public result:
+
+- initial score: `22/100`;
+- replay score: `90/100`;
+- score improvement: `+68`;
+- harm reduction: `25 points`;
+- corrected critical omissions: `3`;
+- new omissions: `0`;
+- deterministic classification: `IMPROVED`.
+
 ## Repository structure
 
 - `frontend/`: browser interface.
@@ -91,15 +158,16 @@ Model responses use validated structured output. GPT-5.6 does not control physio
 
 ## Current status
 
-A functional browser MVP is running locally.
+A functional public browser MVP is deployed and available for evaluation.
 
-Implemented capabilities include deterministic physiological progression, learner actions, decision timeline, deterministic scoring, critical decision detection, structured GPT-5.6 multilingual coaching and adaptive replay from the calculated pre-failure checkpoint.
+Implemented capabilities include deterministic physiological progression, learner actions, decision timeline, deterministic scoring, critical decision detection, structured GPT-5.6 multilingual coaching, adaptive replay from the calculated pre-failure checkpoint, and deterministic comparison between attempts.
 
 Current validation baseline:
 
-- 33 automated backend and API tests passing;
+- 42 automated backend and API tests passing;
 - frontend production build successful;
-- complete simulation, debrief and replay workflow verified in the browser.
+- real GPT-5.6 structured output verified;
+- complete public simulation, debrief, replay and comparison workflow verified in the browser.
 
 
 ## Public deployment
