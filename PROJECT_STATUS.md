@@ -103,7 +103,7 @@ Complete the competition-facing layer:
 - Authentication or learner accounts.
 - Scenario authoring interface.
 - Additional clinical scenarios.
-- Production deployment.
+- Public deployment completed.
 - Submission video.
 - Final Build Week submission package.
 
@@ -131,6 +131,9 @@ Finalize the competition demo narrative and submission package, then prepare pub
 
 - `40 passed, 1 non-blocking warning`
 - Frontend production build successful
+- Public frontend deployed on Vercel
+- Public backend deployed on Render
+- Public end-to-end workflow verified
 - Complete simulation, debrief, replay and quantified-improvement workflow verified in browser
 - Demonstrated score improvement from `22/100` to `90/100`
 - Demonstrated deterministic score delta of `+68`

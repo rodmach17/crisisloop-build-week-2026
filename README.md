@@ -101,6 +101,28 @@ Current validation baseline:
 - frontend production build successful;
 - complete simulation, debrief and replay workflow verified in the browser.
 
+
+## Public deployment
+
+- Application: `https://crisisloop-build-week-2026.vercel.app`
+- API: `https://crisisloop-api.onrender.com`
+- API health check: `https://crisisloop-api.onrender.com/health`
+
+The public end-to-end workflow has been verified:
+
+**simulation → deterministic score → GPT-5.6 debrief → adaptive replay → quantified improvement**
+
+Validated public result:
+
+- initial score: `22/100`;
+- replay score: `90/100`;
+- score delta: `+68`;
+- harm reduction: `25 points`;
+- corrected omissions: `3`;
+- new omissions: `0`.
+
+The free Render instance may require a short cold start after inactivity.
+
 ## Safety notice
 
 CrisisLoop is an educational simulation prototype.
