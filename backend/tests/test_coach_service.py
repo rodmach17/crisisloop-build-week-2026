@@ -87,3 +87,49 @@ def test_compact_list_item_removes_long_disclaimer_tail() -> None:
     assert result.startswith("Iniciar líquidos intravenosos")
     assert "protocolos reales" not in result
 
+
+def test_generate_debrief_uses_structured_async_response(monkeypatch) -> None:
+    import anyio
+
+    from backend.app.coach.service import generate_adaptive_debrief
+    from backend.app.engine.session import create_simulation_session
+    from backend.app.schemas.coach import AdaptiveDebriefContent
+    from backend.app.scoring.evaluator import evaluate_session
+
+    captured = {}
+    parsed = AdaptiveDebriefContent(
+        performance_summary="No critical failure was detected.",
+        strengths=["The learner escalated care."],
+        improvement_priorities=["Continue acting promptly."],
+        clinical_reasoning_explanation="The verified timeline supports this.",
+        replay_objective="Repeat the timely sequence.",
+        replay_success_criteria=["Escalate within 60 seconds."],
+    )
+
+    class FakeResponse:
+        output_parsed = parsed
+
+    class FakeResponses:
+        async def parse(self, **kwargs):
+            captured.update(kwargs)
+            return FakeResponse()
+
+    class FakeClient:
+        responses = FakeResponses()
+
+    monkeypatch.setenv("CRISISLOOP_COACH_MODEL", "test-model")
+    session = create_simulation_session()
+    score = evaluate_session(session)
+
+    result = anyio.run(
+        generate_adaptive_debrief,
+        session,
+        score,
+        "English",
+        FakeClient(),
+    )
+
+    assert result.model == "test-model"
+    assert result.score == score
+    assert captured["store"] is False
+    assert captured["text_format"] is AdaptiveDebriefContent

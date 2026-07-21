@@ -18,7 +18,7 @@ Complete the competition-facing layer:
 
 1. Polish the judge-facing demo flow.
 2. Finalize competition documentation.
-3. Prepare deployment.
+3. Maintain the public deployment configuration.
 4. Record the submission video.
 5. Package the final Build Week submission.
 
@@ -103,7 +103,6 @@ Complete the competition-facing layer:
 - Authentication or learner accounts.
 - Scenario authoring interface.
 - Additional clinical scenarios.
-- Public deployment completed.
 - Submission video.
 - Final Build Week submission package.
 
@@ -113,7 +112,7 @@ None.
 
 ## Next exact action
 
-Finalize the competition demo narrative and submission package, then prepare public deployment.
+Finalize the competition demo narrative and submission package.
 
 ## Current repository path
 
@@ -129,7 +128,7 @@ Finalize the competition demo narrative and submission package, then prepare pub
 
 ## Current validated baseline
 
-- `40 passed, 1 non-blocking warning`
+- `44 passed`
 - Frontend production build successful
 - Public frontend deployed on Vercel
 - Public backend deployed on Render

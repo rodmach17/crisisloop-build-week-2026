@@ -172,7 +172,7 @@ These values are calculated by deterministic comparison of the two verified simu
 
 ## Validation status
 
-- `40` automated backend and API tests passing.
+- `44` automated backend and API tests passing.
 - Frontend production build successful.
 - Real GPT-5.6 structured output verified.
 - Full browser workflow verified:
@@ -196,11 +196,9 @@ It is not:
 
 - One clinical scenario.
 - Three learner actions.
-- Local execution.
 - No authentication.
 - No persistent database.
 - No persistent learner history.
-- No production deployment yet.
 - No prospective educational validation yet.
 
 ## Expansion potential

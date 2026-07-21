@@ -175,7 +175,7 @@ CrisisLoop converts feedback into immediate deliberate practice by reconstructin
 
 ## Validation
 
-- 42 automated backend and API tests passing.
+- 44 automated backend and API tests passing.
 - Frontend production build successful.
 - Real GPT-5.6 structured output verified.
 - Full public workflow verified:

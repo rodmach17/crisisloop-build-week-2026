@@ -148,9 +148,9 @@ Validated public result:
 
 - `frontend/`: browser interface.
 - `backend/`: API, simulation engine, scoring, schemas and coaching.
-- `scenarios/`: deterministic clinical scenario definitions.
+- `backend/app/engine/`: deterministic scenario and replay engine.
 - `docs/`: architecture, validation and submission materials.
-- `scripts/`: development and validation utilities.
+- `render.yaml`: backend deployment configuration.
 - `BUILD_WEEK_SCOPE.md`: frozen competition scope.
 - `PROJECT_STATUS.md`: current operational state.
 - `DECISIONS.md`: product and architecture decisions.
@@ -164,7 +164,7 @@ Implemented capabilities include deterministic physiological progression, learne
 
 Current validation baseline:
 
-- 42 automated backend and API tests passing;
+- 44 automated backend and API tests passing;
 - frontend production build successful;
 - real GPT-5.6 structured output verified;
 - complete public simulation, debrief, replay and comparison workflow verified in the browser.
@@ -190,6 +190,39 @@ Validated public result:
 - new omissions: `0`.
 
 The free Render instance may require a short cold start after inactivity.
+
+## Local development and validation
+
+Copy `.env.example` to `.env`, provide `OPENAI_API_KEY` only if testing the
+adaptive coach, and install the pinned backend dependencies:
+
+```bash
+python -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/python -m uvicorn backend.app.main:app --reload
+```
+
+In a separate shell, start the frontend:
+
+```bash
+cd frontend
+npm ci
+npm run dev
+```
+
+Run the automated validation from the repository root:
+
+```bash
+.venv/bin/python -m pytest -q
+cd frontend
+npm run lint
+npm run build
+```
+
+For production, configure `OPENAI_API_KEY`, `CRISISLOOP_COACH_MODEL`, and
+`CRISISLOOP_ALLOWED_ORIGINS` on the backend, and provide
+`VITE_API_BASE_URL` when building the frontend. Never expose the OpenAI API key
+through a `VITE_` variable.
 
 ## Safety notice
 

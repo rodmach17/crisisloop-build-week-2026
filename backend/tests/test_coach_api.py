@@ -1,18 +1,17 @@
-from fastapi.testclient import TestClient
-
 from backend.app.main import app
 from backend.app.schemas.coach import (
     AdaptiveDebriefContent,
     CoachDebriefResponse,
 )
+from backend.tests.client import ASGITestClient
 
-client = TestClient(app)
+client = ASGITestClient(app)
 
 
 def test_coach_debrief_endpoint_returns_structured_response(
     monkeypatch,
 ) -> None:
-    def fake_generate_adaptive_debrief(
+    async def fake_generate_adaptive_debrief(
         session,
         score,
         language,
@@ -80,3 +79,26 @@ def test_coach_debrief_endpoint_returns_structured_response(
     assert result["language"] == "Spanish"
     assert result["educational_use_only"] is True
     assert result["score"]["critical_decision"]["elapsed_seconds"] == 120
+
+
+def test_coach_debrief_endpoint_returns_controlled_service_error(
+    monkeypatch,
+) -> None:
+    async def unavailable_coach(**_kwargs):
+        raise RuntimeError("provider detail must not be exposed")
+
+    monkeypatch.setattr(
+        "backend.app.main.generate_adaptive_debrief",
+        unavailable_coach,
+    )
+
+    session = client.post("/session").json()
+    response = client.post(
+        "/coach/debrief",
+        json={"session": session, "language": "English"},
+    )
+
+    assert response.status_code == 503
+    assert response.json() == {
+        "detail": "Adaptive coaching is temporarily unavailable."
+    }

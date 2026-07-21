@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 
 from dotenv import load_dotenv
-from openai import OpenAI
+from openai import AsyncOpenAI
 
 from backend.app.schemas.coach import (
     AdaptiveDebriefContent,
@@ -87,11 +87,11 @@ def _load_environment() -> None:
     load_dotenv(dotenv_path=project_root / ".env")
 
 
-def generate_adaptive_debrief(
+async def generate_adaptive_debrief(
     session: SimulationSession,
     score: SessionScore,
     language: str = "English",
-    client: OpenAI | None = None,
+    client: AsyncOpenAI | None = None,
 ) -> CoachDebriefResponse:
     """Generate educational feedback without changing simulation state."""
     _load_environment()
@@ -100,7 +100,7 @@ def generate_adaptive_debrief(
         "CRISISLOOP_COACH_MODEL",
         DEFAULT_COACH_MODEL,
     )
-    openai_client = client or OpenAI()
+    openai_client = client or AsyncOpenAI()
 
     replay_from_seconds = determine_replay_from_seconds(score)
     language_name = language.strip()
@@ -113,7 +113,7 @@ def generate_adaptive_debrief(
         "output_language": language,
     }
 
-    response = openai_client.responses.parse(
+    response = await openai_client.responses.parse(
         model=selected_model,
         store=False,
         input=[

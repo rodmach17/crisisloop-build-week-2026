@@ -1,4 +1,30 @@
-# React + TypeScript + Vite
+# CrisisLoop frontend
+
+React, TypeScript, and Vite interface for the CrisisLoop educational simulation.
+
+## Local development
+
+From this directory:
+
+```bash
+npm ci
+npm run dev
+```
+
+Set `VITE_API_BASE_URL` to the backend origin. It defaults to
+`http://127.0.0.1:8000` for local development.
+
+## Production validation
+
+```bash
+npm run lint
+npm run build
+```
+
+The production host must provide `VITE_API_BASE_URL` at build time. The backend
+must include the frontend origin in `CRISISLOOP_ALLOWED_ORIGINS`.
+
+## Vite notes
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 

@@ -2,6 +2,7 @@ import os
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from openai import OpenAIError
 
 from backend.app.coach.service import generate_adaptive_debrief
 from backend.app.engine.interventions import apply_clinical_action
@@ -65,7 +66,7 @@ app.add_middleware(
 
 
 @app.get("/")
-def root() -> dict[str, str]:
+async def root() -> dict[str, str]:
     return {
         "name": "CrisisLoop API",
         "status": "running",
@@ -74,19 +75,19 @@ def root() -> dict[str, str]:
 
 
 @app.get("/health")
-def health() -> dict[str, str]:
+async def health() -> dict[str, str]:
     return {
         "status": "healthy",
     }
 
 
 @app.get("/scenario/initial", response_model=PatientState)
-def get_initial_scenario() -> PatientState:
+async def get_initial_scenario() -> PatientState:
     return create_initial_patient_state()
 
 
 @app.post("/scenario/advance", response_model=AdvanceScenarioResponse)
-def advance_scenario(
+async def advance_scenario(
     request: AdvanceScenarioRequest,
 ) -> AdvanceScenarioResponse:
     current_state = advance_patient_state(
@@ -101,7 +102,7 @@ def advance_scenario(
 
 
 @app.post("/scenario/action", response_model=ActionResult)
-def apply_action(
+async def apply_action(
     request: ApplyActionRequest,
 ) -> ActionResult:
     updated_state, description = apply_clinical_action(
@@ -118,12 +119,12 @@ def apply_action(
 
 
 @app.post("/session", response_model=SimulationSession)
-def create_session() -> SimulationSession:
+async def create_session() -> SimulationSession:
     return create_simulation_session()
 
 
 @app.post("/session/advance", response_model=SimulationSession)
-def advance_existing_session(
+async def advance_existing_session(
     request: AdvanceSessionRequest,
 ) -> SimulationSession:
     return advance_session(
@@ -133,7 +134,7 @@ def advance_existing_session(
 
 
 @app.post("/session/action", response_model=SimulationSession)
-def apply_session_action(
+async def apply_session_action(
     request: ApplySessionActionRequest,
 ) -> SimulationSession:
     return apply_action_to_session(
@@ -143,7 +144,7 @@ def apply_session_action(
 
 
 @app.post("/session/score", response_model=SessionScoreResponse)
-def score_session(
+async def score_session(
     session: SimulationSession,
 ) -> SessionScoreResponse:
     return SessionScoreResponse(
@@ -151,20 +152,28 @@ def score_session(
         score=evaluate_session(session),
     )
 
+
 @app.post("/coach/debrief", response_model=CoachDebriefResponse)
-def create_adaptive_debrief(
+async def create_adaptive_debrief(
     request: CoachDebriefRequest,
 ) -> CoachDebriefResponse:
     score = evaluate_session(request.session)
 
-    return generate_adaptive_debrief(
-        session=request.session,
-        score=score,
-        language=request.language,
-    )
+    try:
+        return await generate_adaptive_debrief(
+            session=request.session,
+            score=score,
+            language=request.language,
+        )
+    except (OpenAIError, RuntimeError) as error:
+        raise HTTPException(
+            status_code=503,
+            detail="Adaptive coaching is temporarily unavailable.",
+        ) from error
+
 
 @app.post("/session/replay", response_model=SimulationSession)
-def create_replay(
+async def create_replay(
     request: ReplaySessionRequest,
 ) -> SimulationSession:
     try:
@@ -178,8 +187,9 @@ def create_replay(
             detail=str(error),
         ) from error
 
+
 @app.post("/session/compare", response_model=SessionComparison)
-def compare_simulation_sessions(
+async def compare_simulation_sessions(
     request: CompareSessionsRequest,
 ) -> SessionComparison:
     try:
@@ -192,4 +202,3 @@ def compare_simulation_sessions(
             status_code=400,
             detail=str(error),
         ) from error
-

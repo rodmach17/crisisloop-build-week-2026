@@ -1,9 +1,8 @@
-from fastapi.testclient import TestClient
-
 from backend.app.main import app
+from backend.tests.client import ASGITestClient
 
 
-client = TestClient(app)
+client = ASGITestClient(app)
 
 
 def _create_session():
